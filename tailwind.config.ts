@@ -61,7 +61,20 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				// GOMFlow Brand Colors
+				orange: {
+					DEFAULT: 'hsl(var(--gomflow-orange))',
+					foreground: 'hsl(var(--gomflow-orange-foreground))',
+					hover: 'hsl(var(--gomflow-orange-hover))'
+				},
+				'gomflow-gray': {
+					light: 'hsl(var(--gomflow-gray-light))',
+					medium: 'hsl(var(--gomflow-gray-medium))'
+				},
+				'gomflow-success': 'hsl(var(--gomflow-success))',
+				'gomflow-warning': 'hsl(var(--gomflow-warning))',
+				'gomflow-hot': 'hsl(var(--gomflow-hot))'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -84,11 +97,21 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'float': {
+					'0%, 100%': { transform: 'translateY(0px)' },
+					'50%': { transform: 'translateY(-10px)' }
+				},
+				'bounce-gentle': {
+					'0%, 100%': { transform: 'translateY(0)' },
+					'50%': { transform: 'translateY(-5px)' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'float': 'float 3s ease-in-out infinite',
+				'bounce-gentle': 'bounce-gentle 2s ease-in-out infinite'
 			}
 		}
 	},
