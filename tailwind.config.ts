@@ -76,6 +76,11 @@ export default {
 				'gomflow-warning': 'hsl(var(--gomflow-warning))',
 				'gomflow-hot': 'hsl(var(--gomflow-hot))'
 			},
+			boxShadow: {
+				'card': 'var(--shadow-card)',
+				'hover': 'var(--shadow-hover)',
+				'orange': 'var(--shadow-orange)'
+			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
