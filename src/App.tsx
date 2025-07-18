@@ -7,6 +7,10 @@ import Landing from "./pages/Landing";
 import Product from "./pages/Product";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
+import Auth from "./pages/Auth";
+import GOMDashboard from "./pages/GOMDashboard";
+import CreateOrder from "./pages/CreateOrder";
+import OrderView from "./pages/OrderView";
 
 const queryClient = new QueryClient();
 

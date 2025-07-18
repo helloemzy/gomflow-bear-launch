@@ -144,6 +144,36 @@ export type Database = {
         }
         Relationships: []
       }
+      countries: {
+        Row: {
+          code: string
+          created_at: string
+          currency_code: string
+          currency_symbol: string
+          id: string
+          is_active: boolean
+          name: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          currency_code: string
+          currency_symbol: string
+          id?: string
+          is_active?: boolean
+          name: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          currency_code?: string
+          currency_symbol?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+        }
+        Relationships: []
+      }
       generated_content: {
         Row: {
           content: string
@@ -338,6 +368,139 @@ export type Database = {
             columns: ["rss_feed_id"]
             isOneToOne: false
             referencedRelation: "rss_feeds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          closing_date: string
+          created_at: string
+          currency_code: string
+          current_orders: number
+          description: string | null
+          estimated_shipping_date: string | null
+          gom_id: string
+          id: string
+          images: string[]
+          is_published: boolean
+          minimum_orders: number
+          payment_instructions: string | null
+          payment_methods: Json
+          price_per_item: number
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          closing_date: string
+          created_at?: string
+          currency_code: string
+          current_orders?: number
+          description?: string | null
+          estimated_shipping_date?: string | null
+          gom_id: string
+          id?: string
+          images?: string[]
+          is_published?: boolean
+          minimum_orders?: number
+          payment_instructions?: string | null
+          payment_methods?: Json
+          price_per_item: number
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          closing_date?: string
+          created_at?: string
+          currency_code?: string
+          current_orders?: number
+          description?: string | null
+          estimated_shipping_date?: string | null
+          gom_id?: string
+          id?: string
+          images?: string[]
+          is_published?: boolean
+          minimum_orders?: number
+          payment_instructions?: string | null
+          payment_methods?: Json
+          price_per_item?: number
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_gom_id_fkey"
+            columns: ["gom_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      participants: {
+        Row: {
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          joined_at: string
+          notes: string | null
+          order_id: string
+          payment_method: string
+          payment_proof_url: string | null
+          payment_reference: string | null
+          quantity: number
+          status: string
+          total_amount: number
+          updated_at: string
+          verified_at: string | null
+          whatsapp_number: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          joined_at?: string
+          notes?: string | null
+          order_id: string
+          payment_method: string
+          payment_proof_url?: string | null
+          payment_reference?: string | null
+          quantity?: number
+          status?: string
+          total_amount: number
+          updated_at?: string
+          verified_at?: string | null
+          whatsapp_number?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          joined_at?: string
+          notes?: string | null
+          order_id?: string
+          payment_method?: string
+          payment_proof_url?: string | null
+          payment_reference?: string | null
+          quantity?: number
+          status?: string
+          total_amount?: number
+          updated_at?: string
+          verified_at?: string | null
+          whatsapp_number?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "participants_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
             referencedColumns: ["id"]
           },
         ]
@@ -698,21 +861,25 @@ export type Database = {
         Row: {
           brand_framework: Json | null
           company: string | null
+          country_id: string | null
           created_at: string | null
           email: string
           email_verification_expires: string | null
           email_verification_token: string | null
           email_verified: boolean | null
           first_name: string
+          full_name: string | null
           id: string
           industry: string | null
           is_verified: boolean | null
           last_name: string
           linkedin_url: string | null
+          member_since: string
           password_hash: string
           phone_number: string | null
           phone_verified: boolean | null
           posting_tier: string | null
+          rating: number | null
           reset_token_expires: string | null
           reset_token_hash: string | null
           role: string | null
@@ -720,27 +887,34 @@ export type Database = {
           stripe_customer_id: string | null
           subscription_status: string | null
           subscription_tier: string | null
+          total_earnings: number
+          total_orders_completed: number
           updated_at: string | null
           verification_token: string | null
+          whatsapp_number: string | null
         }
         Insert: {
           brand_framework?: Json | null
           company?: string | null
+          country_id?: string | null
           created_at?: string | null
           email: string
           email_verification_expires?: string | null
           email_verification_token?: string | null
           email_verified?: boolean | null
           first_name: string
+          full_name?: string | null
           id?: string
           industry?: string | null
           is_verified?: boolean | null
           last_name: string
           linkedin_url?: string | null
+          member_since?: string
           password_hash: string
           phone_number?: string | null
           phone_verified?: boolean | null
           posting_tier?: string | null
+          rating?: number | null
           reset_token_expires?: string | null
           reset_token_hash?: string | null
           role?: string | null
@@ -748,27 +922,34 @@ export type Database = {
           stripe_customer_id?: string | null
           subscription_status?: string | null
           subscription_tier?: string | null
+          total_earnings?: number
+          total_orders_completed?: number
           updated_at?: string | null
           verification_token?: string | null
+          whatsapp_number?: string | null
         }
         Update: {
           brand_framework?: Json | null
           company?: string | null
+          country_id?: string | null
           created_at?: string | null
           email?: string
           email_verification_expires?: string | null
           email_verification_token?: string | null
           email_verified?: boolean | null
           first_name?: string
+          full_name?: string | null
           id?: string
           industry?: string | null
           is_verified?: boolean | null
           last_name?: string
           linkedin_url?: string | null
+          member_since?: string
           password_hash?: string
           phone_number?: string | null
           phone_verified?: boolean | null
           posting_tier?: string | null
+          rating?: number | null
           reset_token_expires?: string | null
           reset_token_hash?: string | null
           role?: string | null
@@ -776,10 +957,21 @@ export type Database = {
           stripe_customer_id?: string | null
           subscription_status?: string | null
           subscription_tier?: string | null
+          total_earnings?: number
+          total_orders_completed?: number
           updated_at?: string | null
           verification_token?: string | null
+          whatsapp_number?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "fk_users_country"
+            columns: ["country_id"]
+            isOneToOne: false
+            referencedRelation: "countries"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       voice_transcriptions: {
         Row: {
