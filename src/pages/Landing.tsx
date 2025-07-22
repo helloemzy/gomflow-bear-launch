@@ -86,12 +86,12 @@ const Landing = () => {
               From 20 hours of spreadsheet hell to 10 minutes of simplicity
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Link to="/dashboard">
+              <Link to="/auth">
                 <Button variant="orange" size="lg" className="text-lg px-8 py-4">
                   Start Free
                 </Button>
               </Link>
-              <Link to="/product/sample">
+              <Link to="/orders">
                 <Button variant="orange-ghost" size="lg" className="text-lg px-8 py-4">
                   See Live Orders
                 </Button>
@@ -186,7 +186,7 @@ const Landing = () => {
                       <Clock className="w-4 h-4" />
                       <span>{order.timeLeft} left</span>
                     </div>
-                    <Link to={`/product/${order.id}`}>
+                    <Link to={`/order/${order.id}`}>
                       <Button size="sm" variant="orange">
                         Join Order
                       </Button>
@@ -315,7 +315,7 @@ const Landing = () => {
               <p className="text-xl text-orange-foreground/80 mb-6">
                 Join thousands of GOMs who've automated their business
               </p>
-              <Link to="/dashboard">
+              <Link to="/auth">
                 <Button variant="orange" size="lg" className="bg-gradient-to-r from-orange to-orange-hover font-bold px-8 py-4 shadow-lg transform hover:scale-105 transition-all duration-500">
                   Start Your Free Trial
                 </Button>

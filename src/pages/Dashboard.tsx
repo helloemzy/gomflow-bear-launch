@@ -130,22 +130,25 @@ const Dashboard = () => {
               />
               <div>
                 <h1 className="text-3xl font-bold text-orange-foreground">
-                  GOM Control Center
+                  My Orders Dashboard
                 </h1>
                 <p className="text-orange-foreground/80">
-                  Welcome back, KpopCollectorSG! 👋
+                  Welcome back! 👋
                 </p>
               </div>
             </div>
             <div className="flex gap-3">
-              <Button variant="orange" size="lg" className="bg-gradient-to-r from-orange to-orange-hover font-bold shadow-lg transform hover:scale-105 transition-all duration-500">
-                <Plus className="w-4 h-4 mr-2" />
-                Create New Order
-              </Button>
-              <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20">
-                <MessageSquare className="w-4 h-4 mr-2" />
-                Send Updates
-              </Button>
+              <Link to="/auth">
+                <Button variant="orange" size="lg" className="bg-gradient-to-r from-orange to-orange-hover font-bold shadow-lg transform hover:scale-105 transition-all duration-500">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Become a GOM
+                </Button>
+              </Link>
+              <Link to="/orders">
+                <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20">
+                  Browse Orders
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
@@ -210,11 +213,11 @@ const Dashboard = () => {
               </Card>
             </div>
 
-            {/* Active Orders */}
+            {/* My Orders */}
             <Card className="card-gomflow">
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
-                  <span>Active Orders</span>
+                  <span>My Joined Orders</span>
                   <Button variant="outline" size="sm">
                     <Eye className="w-4 h-4 mr-2" />
                     View All
@@ -271,7 +274,7 @@ const Dashboard = () => {
                               <Edit className="w-3 h-3 mr-1" />
                               Edit
                             </Button>
-                            <Link to={`/product/${order.id}`}>
+                            <Link to={`/order/${order.id}`}>
                     <Button size="sm" variant="orange">
                       <Eye className="w-3 h-3 mr-1" />
                       View
@@ -425,10 +428,12 @@ const Dashboard = () => {
                 <CardTitle>Quick Actions</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button variant="orange" className="w-full">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Create New Order
-                </Button>
+                <Link to="/gom-dashboard">
+                  <Button variant="orange" className="w-full">
+                    <Plus className="w-4 h-4 mr-2" />
+                    Become a GOM
+                  </Button>
+                </Link>
                 <Button variant="outline" className="w-full">
                   <MessageSquare className="w-4 h-4 mr-2" />
                   Send Updates
