@@ -14,136 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      analytics_events: {
-        Row: {
-          created_at: string | null
-          event_data: Json | null
-          event_type: string
-          id: string
-          ip_address: unknown | null
-          session_id: string | null
-          user_agent: string | null
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          event_data?: Json | null
-          event_type: string
-          id?: string
-          ip_address?: unknown | null
-          session_id?: string | null
-          user_agent?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          event_data?: Json | null
-          event_type?: string
-          id?: string
-          ip_address?: unknown | null
-          session_id?: string | null
-          user_agent?: string | null
-          user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "analytics_events_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      brand_frameworks: {
-        Row: {
-          brand_archetype: string | null
-          communication_style: Json | null
-          content_pillars: Json | null
-          created_at: string | null
-          framework_type: string
-          id: string
-          personality_traits: Json | null
-          target_audience: Json | null
-          updated_at: string | null
-          user_id: string
-          value_proposition: string | null
-        }
-        Insert: {
-          brand_archetype?: string | null
-          communication_style?: Json | null
-          content_pillars?: Json | null
-          created_at?: string | null
-          framework_type?: string
-          id?: string
-          personality_traits?: Json | null
-          target_audience?: Json | null
-          updated_at?: string | null
-          user_id: string
-          value_proposition?: string | null
-        }
-        Update: {
-          brand_archetype?: string | null
-          communication_style?: Json | null
-          content_pillars?: Json | null
-          created_at?: string | null
-          framework_type?: string
-          id?: string
-          personality_traits?: Json | null
-          target_audience?: Json | null
-          updated_at?: string | null
-          user_id?: string
-          value_proposition?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "brand_frameworks_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      content_templates: {
-        Row: {
-          category: string
-          content_types: string[] | null
-          created_at: string | null
-          id: string
-          industry_tags: string[] | null
-          is_active: boolean | null
-          name: string
-          prompt_template: string
-          structure: string
-          updated_at: string | null
-        }
-        Insert: {
-          category: string
-          content_types?: string[] | null
-          created_at?: string | null
-          id?: string
-          industry_tags?: string[] | null
-          is_active?: boolean | null
-          name: string
-          prompt_template: string
-          structure: string
-          updated_at?: string | null
-        }
-        Update: {
-          category?: string
-          content_types?: string[] | null
-          created_at?: string | null
-          id?: string
-          industry_tags?: string[] | null
-          is_active?: boolean | null
-          name?: string
-          prompt_template?: string
-          structure?: string
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
       countries: {
         Row: {
           code: string
@@ -174,330 +44,237 @@ export type Database = {
         }
         Relationships: []
       }
-      generated_content: {
+      messages: {
         Row: {
           content: string
-          content_type: string
           created_at: string | null
-          engagement_metrics: Json | null
+          delivered_at: string | null
+          error_message: string | null
+          external_message_id: string | null
           id: string
-          status: string | null
-          template_used: string | null
-          topic: string
-          updated_at: string | null
-          user_id: string
-          voice_signature_used: Json | null
+          message_type: Database["public"]["Enums"]["message_type"]
+          platform: Database["public"]["Enums"]["platform_type"]
+          sent_at: string | null
+          status: Database["public"]["Enums"]["message_status"] | null
+          submission_id: string
         }
         Insert: {
           content: string
-          content_type: string
           created_at?: string | null
-          engagement_metrics?: Json | null
+          delivered_at?: string | null
+          error_message?: string | null
+          external_message_id?: string | null
           id?: string
-          status?: string | null
-          template_used?: string | null
-          topic: string
-          updated_at?: string | null
-          user_id: string
-          voice_signature_used?: Json | null
+          message_type: Database["public"]["Enums"]["message_type"]
+          platform: Database["public"]["Enums"]["platform_type"]
+          sent_at?: string | null
+          status?: Database["public"]["Enums"]["message_status"] | null
+          submission_id: string
         }
         Update: {
           content?: string
-          content_type?: string
           created_at?: string | null
-          engagement_metrics?: Json | null
+          delivered_at?: string | null
+          error_message?: string | null
+          external_message_id?: string | null
           id?: string
-          status?: string | null
-          template_used?: string | null
-          topic?: string
-          updated_at?: string | null
-          user_id?: string
-          voice_signature_used?: Json | null
+          message_type?: Database["public"]["Enums"]["message_type"]
+          platform?: Database["public"]["Enums"]["platform_type"]
+          sent_at?: string | null
+          status?: Database["public"]["Enums"]["message_status"] | null
+          submission_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "generated_content_user_id_fkey"
-            columns: ["user_id"]
+            foreignKeyName: "messages_submission_id_fkey"
+            columns: ["submission_id"]
             isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      generated_posts: {
-        Row: {
-          approval_status: string | null
-          approved_at: string | null
-          body_content: string
-          content_type: string
-          created_at: string | null
-          hashtags: string[] | null
-          headline: string
-          id: string
-          news_article_id: string | null
-          updated_at: string | null
-          user_id: string
-        }
-        Insert: {
-          approval_status?: string | null
-          approved_at?: string | null
-          body_content: string
-          content_type: string
-          created_at?: string | null
-          hashtags?: string[] | null
-          headline: string
-          id?: string
-          news_article_id?: string | null
-          updated_at?: string | null
-          user_id: string
-        }
-        Update: {
-          approval_status?: string | null
-          approved_at?: string | null
-          body_content?: string
-          content_type?: string
-          created_at?: string | null
-          hashtags?: string[] | null
-          headline?: string
-          id?: string
-          news_article_id?: string | null
-          updated_at?: string | null
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "generated_posts_news_article_id_fkey"
-            columns: ["news_article_id"]
-            isOneToOne: false
-            referencedRelation: "news_articles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "generated_posts_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      linkedin_connections: {
-        Row: {
-          access_token: string
-          created_at: string | null
-          id: string
-          is_active: boolean | null
-          linkedin_id: string
-          refresh_token: string | null
-          token_expires_at: string
-          updated_at: string | null
-          user_id: string
-        }
-        Insert: {
-          access_token: string
-          created_at?: string | null
-          id?: string
-          is_active?: boolean | null
-          linkedin_id: string
-          refresh_token?: string | null
-          token_expires_at: string
-          updated_at?: string | null
-          user_id: string
-        }
-        Update: {
-          access_token?: string
-          created_at?: string | null
-          id?: string
-          is_active?: boolean | null
-          linkedin_id?: string
-          refresh_token?: string | null
-          token_expires_at?: string
-          updated_at?: string | null
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "linkedin_connections_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: true
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      news_articles: {
-        Row: {
-          article_url: string
-          content: string | null
-          created_at: string | null
-          id: string
-          processed: boolean | null
-          published_at: string | null
-          relevance_score: number | null
-          rss_feed_id: string
-          summary: string | null
-          title: string
-        }
-        Insert: {
-          article_url: string
-          content?: string | null
-          created_at?: string | null
-          id?: string
-          processed?: boolean | null
-          published_at?: string | null
-          relevance_score?: number | null
-          rss_feed_id: string
-          summary?: string | null
-          title: string
-        }
-        Update: {
-          article_url?: string
-          content?: string | null
-          created_at?: string | null
-          id?: string
-          processed?: boolean | null
-          published_at?: string | null
-          relevance_score?: number | null
-          rss_feed_id?: string
-          summary?: string | null
-          title?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "news_articles_rss_feed_id_fkey"
-            columns: ["rss_feed_id"]
-            isOneToOne: false
-            referencedRelation: "rss_feeds"
+            referencedRelation: "submissions"
             referencedColumns: ["id"]
           },
         ]
       }
       orders: {
         Row: {
-          closing_date: string
-          created_at: string
-          currency_code: string
-          current_orders: number
+          auto_close_on_deadline: boolean | null
+          created_at: string | null
+          currency: Database["public"]["Enums"]["currency_code"]
+          deadline: string
           description: string | null
-          estimated_shipping_date: string | null
-          gom_id: string
           id: string
-          images: string[]
-          is_published: boolean
-          minimum_orders: number
-          payment_instructions: string | null
+          is_active: boolean | null
+          max_orders: number | null
+          min_orders: number | null
           payment_methods: Json
-          price_per_item: number
-          status: string
+          price: number
+          slug: string
           title: string
-          updated_at: string
+          updated_at: string | null
+          user_id: string
         }
         Insert: {
-          closing_date: string
-          created_at?: string
-          currency_code: string
-          current_orders?: number
+          auto_close_on_deadline?: boolean | null
+          created_at?: string | null
+          currency: Database["public"]["Enums"]["currency_code"]
+          deadline: string
           description?: string | null
-          estimated_shipping_date?: string | null
-          gom_id: string
           id?: string
-          images?: string[]
-          is_published?: boolean
-          minimum_orders?: number
-          payment_instructions?: string | null
+          is_active?: boolean | null
+          max_orders?: number | null
+          min_orders?: number | null
           payment_methods?: Json
-          price_per_item: number
-          status?: string
+          price: number
+          slug: string
           title: string
-          updated_at?: string
+          updated_at?: string | null
+          user_id: string
         }
         Update: {
-          closing_date?: string
-          created_at?: string
-          currency_code?: string
-          current_orders?: number
+          auto_close_on_deadline?: boolean | null
+          created_at?: string | null
+          currency?: Database["public"]["Enums"]["currency_code"]
+          deadline?: string
           description?: string | null
-          estimated_shipping_date?: string | null
-          gom_id?: string
           id?: string
-          images?: string[]
-          is_published?: boolean
-          minimum_orders?: number
-          payment_instructions?: string | null
+          is_active?: boolean | null
+          max_orders?: number | null
+          min_orders?: number | null
           payment_methods?: Json
-          price_per_item?: number
-          status?: string
+          price?: number
+          slug?: string
           title?: string
-          updated_at?: string
+          updated_at?: string | null
+          user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "orders_gom_id_fkey"
-            columns: ["gom_id"]
+            foreignKeyName: "orders_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: "users"
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      payment_transactions: {
+        Row: {
+          amount: number
+          created_at: string | null
+          currency: Database["public"]["Enums"]["currency_code"]
+          gateway: Database["public"]["Enums"]["payment_gateway"]
+          gateway_payment_id: string
+          gateway_status: string
+          id: string
+          paid_at: string | null
+          payment_method: string | null
+          submission_id: string
+          webhook_data: Json | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          currency: Database["public"]["Enums"]["currency_code"]
+          gateway: Database["public"]["Enums"]["payment_gateway"]
+          gateway_payment_id: string
+          gateway_status: string
+          id?: string
+          paid_at?: string | null
+          payment_method?: string | null
+          submission_id: string
+          webhook_data?: Json | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          currency?: Database["public"]["Enums"]["currency_code"]
+          gateway?: Database["public"]["Enums"]["payment_gateway"]
+          gateway_payment_id?: string
+          gateway_status?: string
+          id?: string
+          paid_at?: string | null
+          payment_method?: string | null
+          submission_id?: string
+          webhook_data?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_transactions_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
             referencedColumns: ["id"]
           },
         ]
       }
-      participants: {
+      platform_connections: {
         Row: {
-          created_at: string
-          email: string
-          full_name: string
+          config: Json
+          connection_type: Database["public"]["Enums"]["connection_type"]
+          created_at: string | null
           id: string
-          joined_at: string
-          notes: string | null
-          order_id: string
-          payment_method: string
-          payment_proof_url: string | null
-          payment_reference: string | null
-          quantity: number
-          status: string
-          total_amount: number
-          updated_at: string
-          verified_at: string | null
-          whatsapp_number: string | null
+          is_active: boolean | null
+          platform: Database["public"]["Enums"]["platform_type"]
+          user_id: string
         }
         Insert: {
-          created_at?: string
-          email: string
-          full_name: string
+          config?: Json
+          connection_type: Database["public"]["Enums"]["connection_type"]
+          created_at?: string | null
           id?: string
-          joined_at?: string
-          notes?: string | null
-          order_id: string
-          payment_method: string
-          payment_proof_url?: string | null
-          payment_reference?: string | null
-          quantity?: number
-          status?: string
-          total_amount: number
-          updated_at?: string
-          verified_at?: string | null
-          whatsapp_number?: string | null
+          is_active?: boolean | null
+          platform: Database["public"]["Enums"]["platform_type"]
+          user_id: string
         }
         Update: {
-          created_at?: string
-          email?: string
-          full_name?: string
+          config?: Json
+          connection_type?: Database["public"]["Enums"]["connection_type"]
+          created_at?: string | null
           id?: string
-          joined_at?: string
-          notes?: string | null
-          order_id?: string
-          payment_method?: string
-          payment_proof_url?: string | null
-          payment_reference?: string | null
-          quantity?: number
-          status?: string
-          total_amount?: number
-          updated_at?: string
-          verified_at?: string | null
-          whatsapp_number?: string | null
+          is_active?: boolean | null
+          platform?: Database["public"]["Enums"]["platform_type"]
+          user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "participants_order_id_fkey"
+            foreignKeyName: "platform_connections_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      platform_posts: {
+        Row: {
+          created_at: string | null
+          id: string
+          order_id: string
+          platform: Database["public"]["Enums"]["platform_type"]
+          post_id: string | null
+          post_url: string | null
+          status: Database["public"]["Enums"]["post_status"] | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          order_id: string
+          platform: Database["public"]["Enums"]["platform_type"]
+          post_id?: string | null
+          post_url?: string | null
+          status?: Database["public"]["Enums"]["post_status"] | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          order_id?: string
+          platform?: Database["public"]["Enums"]["platform_type"]
+          post_id?: string | null
+          post_url?: string | null
+          status?: Database["public"]["Enums"]["post_status"] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_posts_order_id_fkey"
             columns: ["order_id"]
             isOneToOne: false
             referencedRelation: "orders"
@@ -505,511 +282,146 @@ export type Database = {
           },
         ]
       }
-      phone_otp_logs: {
+      profiles: {
         Row: {
+          country: Database["public"]["Enums"]["country_code"]
           created_at: string | null
-          expires_at: string
-          id: string
-          ip_address: unknown | null
-          otp_code: string
-          phone_number: string
-          used: boolean | null
-          user_agent: string | null
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          expires_at: string
-          id?: string
-          ip_address?: unknown | null
-          otp_code: string
-          phone_number: string
-          used?: boolean | null
-          user_agent?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          expires_at?: string
-          id?: string
-          ip_address?: unknown | null
-          otp_code?: string
-          phone_number?: string
-          used?: boolean | null
-          user_agent?: string | null
-          user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "phone_otp_logs_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      posting_schedule: {
-        Row: {
-          created_at: string | null
-          generated_post_id: string
-          id: string
-          platform: string | null
-          posted_at: string | null
-          scheduled_time: string
-          status: string | null
+          discord_enabled: boolean | null
+          email: string
+          name: string
+          phone: string
+          plan: Database["public"]["Enums"]["user_plan"] | null
+          subscription_status:
+            | Database["public"]["Enums"]["subscription_status"]
+            | null
+          telegram_enabled: boolean | null
+          timezone: string
           updated_at: string | null
           user_id: string
+          username: string
+          whatsapp_enabled: boolean | null
         }
         Insert: {
+          country?: Database["public"]["Enums"]["country_code"]
           created_at?: string | null
-          generated_post_id: string
-          id?: string
-          platform?: string | null
-          posted_at?: string | null
-          scheduled_time: string
-          status?: string | null
+          discord_enabled?: boolean | null
+          email: string
+          name: string
+          phone: string
+          plan?: Database["public"]["Enums"]["user_plan"] | null
+          subscription_status?:
+            | Database["public"]["Enums"]["subscription_status"]
+            | null
+          telegram_enabled?: boolean | null
+          timezone?: string
           updated_at?: string | null
           user_id: string
+          username: string
+          whatsapp_enabled?: boolean | null
         }
         Update: {
+          country?: Database["public"]["Enums"]["country_code"]
           created_at?: string | null
-          generated_post_id?: string
-          id?: string
-          platform?: string | null
-          posted_at?: string | null
-          scheduled_time?: string
-          status?: string | null
+          discord_enabled?: boolean | null
+          email?: string
+          name?: string
+          phone?: string
+          plan?: Database["public"]["Enums"]["user_plan"] | null
+          subscription_status?:
+            | Database["public"]["Enums"]["subscription_status"]
+            | null
+          telegram_enabled?: boolean | null
+          timezone?: string
           updated_at?: string | null
           user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "posting_schedule_generated_post_id_fkey"
-            columns: ["generated_post_id"]
-            isOneToOne: false
-            referencedRelation: "generated_posts"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "posting_schedule_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      posting_tiers: {
-        Row: {
-          display_name: string
-          features: Json
-          max_rss_feeds: number
-          posts_per_week: number
-          price_monthly: number
-          price_yearly: number
-          tier_name: string
-        }
-        Insert: {
-          display_name: string
-          features: Json
-          max_rss_feeds: number
-          posts_per_week: number
-          price_monthly: number
-          price_yearly: number
-          tier_name: string
-        }
-        Update: {
-          display_name?: string
-          features?: Json
-          max_rss_feeds?: number
-          posts_per_week?: number
-          price_monthly?: number
-          price_yearly?: number
-          tier_name?: string
+          username?: string
+          whatsapp_enabled?: boolean | null
         }
         Relationships: []
       }
-      rss_feeds: {
+      submissions: {
         Row: {
+          buyer_email: string | null
+          buyer_name: string
+          buyer_phone: string
+          buyer_platform: Database["public"]["Enums"]["platform_type"] | null
+          buyer_platform_id: string | null
+          checkout_session_id: string | null
           created_at: string | null
-          feed_name: string
-          feed_url: string
+          currency: Database["public"]["Enums"]["currency_code"]
           id: string
-          is_active: boolean | null
-          keywords: string[] | null
-          last_fetched_at: string | null
+          last_reminder_sent: string | null
+          order_id: string
+          payment_gateway: Database["public"]["Enums"]["payment_gateway"] | null
+          payment_intent_id: string | null
+          payment_reference: string
+          payment_url: string | null
+          quantity: number
+          reminder_count: number | null
+          source_platform: string | null
+          status: Database["public"]["Enums"]["submission_status"] | null
+          total_amount: number
           updated_at: string | null
-          user_id: string
+          utm_source: string | null
         }
         Insert: {
+          buyer_email?: string | null
+          buyer_name: string
+          buyer_phone: string
+          buyer_platform?: Database["public"]["Enums"]["platform_type"] | null
+          buyer_platform_id?: string | null
+          checkout_session_id?: string | null
           created_at?: string | null
-          feed_name: string
-          feed_url: string
+          currency: Database["public"]["Enums"]["currency_code"]
           id?: string
-          is_active?: boolean | null
-          keywords?: string[] | null
-          last_fetched_at?: string | null
+          last_reminder_sent?: string | null
+          order_id: string
+          payment_gateway?:
+            | Database["public"]["Enums"]["payment_gateway"]
+            | null
+          payment_intent_id?: string | null
+          payment_reference: string
+          payment_url?: string | null
+          quantity: number
+          reminder_count?: number | null
+          source_platform?: string | null
+          status?: Database["public"]["Enums"]["submission_status"] | null
+          total_amount: number
           updated_at?: string | null
-          user_id: string
+          utm_source?: string | null
         }
         Update: {
+          buyer_email?: string | null
+          buyer_name?: string
+          buyer_phone?: string
+          buyer_platform?: Database["public"]["Enums"]["platform_type"] | null
+          buyer_platform_id?: string | null
+          checkout_session_id?: string | null
           created_at?: string | null
-          feed_name?: string
-          feed_url?: string
+          currency?: Database["public"]["Enums"]["currency_code"]
           id?: string
-          is_active?: boolean | null
-          keywords?: string[] | null
-          last_fetched_at?: string | null
+          last_reminder_sent?: string | null
+          order_id?: string
+          payment_gateway?:
+            | Database["public"]["Enums"]["payment_gateway"]
+            | null
+          payment_intent_id?: string | null
+          payment_reference?: string
+          payment_url?: string | null
+          quantity?: number
+          reminder_count?: number | null
+          source_platform?: string | null
+          status?: Database["public"]["Enums"]["submission_status"] | null
+          total_amount?: number
           updated_at?: string | null
-          user_id?: string
+          utm_source?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "rss_feeds_user_id_fkey"
-            columns: ["user_id"]
+            foreignKeyName: "submissions_order_id_fkey"
+            columns: ["order_id"]
             isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      subscription_history: {
-        Row: {
-          canceled_at: string | null
-          created_at: string | null
-          current_period_end: string | null
-          current_period_start: string | null
-          id: string
-          plan_name: string
-          status: string
-          stripe_subscription_id: string | null
-          user_id: string
-        }
-        Insert: {
-          canceled_at?: string | null
-          created_at?: string | null
-          current_period_end?: string | null
-          current_period_start?: string | null
-          id?: string
-          plan_name: string
-          status: string
-          stripe_subscription_id?: string | null
-          user_id: string
-        }
-        Update: {
-          canceled_at?: string | null
-          created_at?: string | null
-          current_period_end?: string | null
-          current_period_start?: string | null
-          id?: string
-          plan_name?: string
-          status?: string
-          stripe_subscription_id?: string | null
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "subscription_history_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      subscriptions: {
-        Row: {
-          created_at: string | null
-          current_period_end: string | null
-          current_period_start: string | null
-          id: string
-          status: string | null
-          stripe_customer_id: string | null
-          stripe_subscription_id: string | null
-          tier: string
-          trial_ends_at: string | null
-          updated_at: string | null
-          user_id: string
-        }
-        Insert: {
-          created_at?: string | null
-          current_period_end?: string | null
-          current_period_start?: string | null
-          id?: string
-          status?: string | null
-          stripe_customer_id?: string | null
-          stripe_subscription_id?: string | null
-          tier: string
-          trial_ends_at?: string | null
-          updated_at?: string | null
-          user_id: string
-        }
-        Update: {
-          created_at?: string | null
-          current_period_end?: string | null
-          current_period_start?: string | null
-          id?: string
-          status?: string | null
-          stripe_customer_id?: string | null
-          stripe_subscription_id?: string | null
-          tier?: string
-          trial_ends_at?: string | null
-          updated_at?: string | null
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "subscriptions_tier_fkey"
-            columns: ["tier"]
-            isOneToOne: false
-            referencedRelation: "posting_tiers"
-            referencedColumns: ["tier_name"]
-          },
-          {
-            foreignKeyName: "subscriptions_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: true
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      user_profiles: {
-        Row: {
-          analytics_data: Json | null
-          created_at: string | null
-          id: string
-          last_login: string | null
-          last_voice_analysis: string | null
-          preferences: Json | null
-          total_content_generated: number | null
-          updated_at: string | null
-          user_id: string
-        }
-        Insert: {
-          analytics_data?: Json | null
-          created_at?: string | null
-          id?: string
-          last_login?: string | null
-          last_voice_analysis?: string | null
-          preferences?: Json | null
-          total_content_generated?: number | null
-          updated_at?: string | null
-          user_id: string
-        }
-        Update: {
-          analytics_data?: Json | null
-          created_at?: string | null
-          id?: string
-          last_login?: string | null
-          last_voice_analysis?: string | null
-          preferences?: Json | null
-          total_content_generated?: number | null
-          updated_at?: string | null
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "user_profiles_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      user_sessions: {
-        Row: {
-          created_at: string | null
-          device_info: string | null
-          expires_at: string
-          id: string
-          refresh_token: string
-          updated_at: string | null
-          user_id: string
-        }
-        Insert: {
-          created_at?: string | null
-          device_info?: string | null
-          expires_at: string
-          id: string
-          refresh_token: string
-          updated_at?: string | null
-          user_id: string
-        }
-        Update: {
-          created_at?: string | null
-          device_info?: string | null
-          expires_at?: string
-          id?: string
-          refresh_token?: string
-          updated_at?: string | null
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "user_sessions_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      users: {
-        Row: {
-          brand_framework: Json | null
-          company: string | null
-          country_id: string | null
-          created_at: string | null
-          email: string
-          email_verification_expires: string | null
-          email_verification_token: string | null
-          email_verified: boolean | null
-          first_name: string
-          full_name: string | null
-          id: string
-          industry: string | null
-          is_verified: boolean | null
-          last_name: string
-          linkedin_url: string | null
-          member_since: string
-          password_hash: string
-          phone_number: string | null
-          phone_verified: boolean | null
-          posting_tier: string | null
-          rating: number | null
-          reset_token_expires: string | null
-          reset_token_hash: string | null
-          role: string | null
-          status: string | null
-          stripe_customer_id: string | null
-          subscription_status: string | null
-          subscription_tier: string | null
-          total_earnings: number
-          total_orders_completed: number
-          updated_at: string | null
-          verification_token: string | null
-          whatsapp_number: string | null
-        }
-        Insert: {
-          brand_framework?: Json | null
-          company?: string | null
-          country_id?: string | null
-          created_at?: string | null
-          email: string
-          email_verification_expires?: string | null
-          email_verification_token?: string | null
-          email_verified?: boolean | null
-          first_name: string
-          full_name?: string | null
-          id?: string
-          industry?: string | null
-          is_verified?: boolean | null
-          last_name: string
-          linkedin_url?: string | null
-          member_since?: string
-          password_hash: string
-          phone_number?: string | null
-          phone_verified?: boolean | null
-          posting_tier?: string | null
-          rating?: number | null
-          reset_token_expires?: string | null
-          reset_token_hash?: string | null
-          role?: string | null
-          status?: string | null
-          stripe_customer_id?: string | null
-          subscription_status?: string | null
-          subscription_tier?: string | null
-          total_earnings?: number
-          total_orders_completed?: number
-          updated_at?: string | null
-          verification_token?: string | null
-          whatsapp_number?: string | null
-        }
-        Update: {
-          brand_framework?: Json | null
-          company?: string | null
-          country_id?: string | null
-          created_at?: string | null
-          email?: string
-          email_verification_expires?: string | null
-          email_verification_token?: string | null
-          email_verified?: boolean | null
-          first_name?: string
-          full_name?: string | null
-          id?: string
-          industry?: string | null
-          is_verified?: boolean | null
-          last_name?: string
-          linkedin_url?: string | null
-          member_since?: string
-          password_hash?: string
-          phone_number?: string | null
-          phone_verified?: boolean | null
-          posting_tier?: string | null
-          rating?: number | null
-          reset_token_expires?: string | null
-          reset_token_hash?: string | null
-          role?: string | null
-          status?: string | null
-          stripe_customer_id?: string | null
-          subscription_status?: string | null
-          subscription_tier?: string | null
-          total_earnings?: number
-          total_orders_completed?: number
-          updated_at?: string | null
-          verification_token?: string | null
-          whatsapp_number?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "fk_users_country"
-            columns: ["country_id"]
-            isOneToOne: false
-            referencedRelation: "countries"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      voice_transcriptions: {
-        Row: {
-          audio_duration: number | null
-          characteristics: Json | null
-          created_at: string | null
-          id: string
-          transcript: string
-          updated_at: string | null
-          user_id: string
-          voice_signature: Json | null
-        }
-        Insert: {
-          audio_duration?: number | null
-          characteristics?: Json | null
-          created_at?: string | null
-          id?: string
-          transcript: string
-          updated_at?: string | null
-          user_id: string
-          voice_signature?: Json | null
-        }
-        Update: {
-          audio_duration?: number | null
-          characteristics?: Json | null
-          created_at?: string | null
-          id?: string
-          transcript?: string
-          updated_at?: string | null
-          user_id?: string
-          voice_signature?: Json | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "voice_transcriptions_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
+            referencedRelation: "orders"
             referencedColumns: ["id"]
           },
         ]
@@ -1019,10 +431,63 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_payment_reference: {
+        Args: { country_prefix: string }
+        Returns: string
+      }
+      get_order_stats: {
+        Args: { order_uuid: string }
+        Returns: Json
+      }
+      get_user_dashboard_stats: {
+        Args: { user_uuid: string }
+        Returns: Json
+      }
+      gtrgm_compress: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      gtrgm_decompress: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      gtrgm_in: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      gtrgm_options: {
+        Args: { "": unknown }
+        Returns: undefined
+      }
+      gtrgm_out: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      set_limit: {
+        Args: { "": number }
+        Returns: number
+      }
+      show_limit: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
+      show_trgm: {
+        Args: { "": string }
+        Returns: string[]
+      }
     }
     Enums: {
-      [_ in never]: never
+      connection_type: "group" | "channel" | "webhook"
+      country_code: "PH" | "MY"
+      currency_code: "PHP" | "MYR"
+      message_status: "pending" | "sent" | "failed" | "delivered"
+      message_type: "reminder" | "confirmation" | "query_response" | "custom"
+      payment_gateway: "paymongo" | "billplz"
+      platform_type: "whatsapp" | "telegram" | "discord" | "web"
+      post_status: "posted" | "failed" | "deleted"
+      submission_status: "pending" | "paid" | "failed" | "expired" | "cancelled"
+      subscription_status: "active" | "inactive" | "cancelled"
+      user_plan: "free" | "pro" | "gateway" | "business"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1149,6 +614,18 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      connection_type: ["group", "channel", "webhook"],
+      country_code: ["PH", "MY"],
+      currency_code: ["PHP", "MYR"],
+      message_status: ["pending", "sent", "failed", "delivered"],
+      message_type: ["reminder", "confirmation", "query_response", "custom"],
+      payment_gateway: ["paymongo", "billplz"],
+      platform_type: ["whatsapp", "telegram", "discord", "web"],
+      post_status: ["posted", "failed", "deleted"],
+      submission_status: ["pending", "paid", "failed", "expired", "cancelled"],
+      subscription_status: ["active", "inactive", "cancelled"],
+      user_plan: ["free", "pro", "gateway", "business"],
+    },
   },
 } as const

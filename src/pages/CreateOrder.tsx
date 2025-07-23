@@ -138,18 +138,15 @@ export default function CreateOrder() {
       const { data, error } = await supabase
         .from('orders')
         .insert({
-          gom_id: user.id,
+          user_id: user.id,
           title: orderData.title,
           description: orderData.description,
-          images: orderData.images,
-          price_per_item: orderData.price_per_item,
-          currency_code: country?.currency_code || 'USD',
-          minimum_orders: orderData.minimum_orders,
-          closing_date: orderData.closing_date?.toISOString(),
-          estimated_shipping_date: orderData.estimated_shipping_date?.toISOString(),
+          price: orderData.price_per_item,
+          currency: 'PHP' as const,
+          min_orders: orderData.minimum_orders,
+          deadline: orderData.closing_date?.toISOString(),
           payment_methods: orderData.payment_methods,
-          payment_instructions: orderData.payment_instructions,
-          is_published: publish
+          slug: orderData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
         })
         .select()
         .single();

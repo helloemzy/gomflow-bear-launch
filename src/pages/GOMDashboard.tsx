@@ -73,7 +73,7 @@ export default function GOMDashboard() {
         const { data: ordersData, error: ordersError } = await supabase
           .from('orders')
           .select('*')
-          .eq('gom_id', user.id)
+          .eq('user_id', user.id)
           .order('created_at', { ascending: false });
 
         if (ordersError) throw ordersError;
@@ -88,8 +88,8 @@ export default function GOMDashboard() {
         const currencySymbol = countryData?.currency_symbol || '$';
 
         // Calculate stats
-        const activeOrders = ordersData?.filter(order => order.status === 'active').length || 0;
-        const totalCustomers = ordersData?.reduce((sum, order) => sum + order.current_orders, 0) || 0;
+        const activeOrders = ordersData?.filter(order => order.is_active).length || 0;
+        const totalCustomers = 0; // Will implement when submissions system is working
         const timesSaved = (ordersData?.length || 0) * 20; // 20 hours saved per order
 
         setOrders(ordersData || []);

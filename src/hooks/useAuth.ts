@@ -23,11 +23,11 @@ export function useAuth() {
       async (event, session) => {
         setSession(session);
         if (session?.user) {
-          // Fetch additional user data from our users table
+          // Fetch additional user data from our profiles table
           const { data: userData } = await supabase
-            .from('users')
+            .from('profiles')
             .select('*')
-            .eq('id', session.user.id)
+            .eq('user_id', session.user.id)
             .single();
           
           setUser({ ...session.user, ...userData });
@@ -43,9 +43,9 @@ export function useAuth() {
       setSession(session);
       if (session?.user) {
         supabase
-          .from('users')
+          .from('profiles')
           .select('*')
-          .eq('id', session.user.id)
+          .eq('user_id', session.user.id)
           .single()
           .then(({ data: userData }) => {
             setUser({ ...session.user, ...userData });
@@ -79,17 +79,14 @@ export function useAuth() {
     });
 
     if (data.user && !error) {
-      // Create user profile in our users table
-      await supabase.from('users').insert({
-        id: data.user.id,
+      // Create user profile in our profiles table
+      await supabase.from('profiles').insert({
+        user_id: data.user.id,
         email: data.user.email,
-        password_hash: '', // This will be handled by Supabase Auth
-        first_name: userData.full_name.split(' ')[0] || '',
-        last_name: userData.full_name.split(' ').slice(1).join(' ') || '',
-        full_name: userData.full_name,
-        country_id: userData.country_id,
-        whatsapp_number: userData.whatsapp_number,
-        member_since: new Date().toISOString()
+        name: userData.full_name,
+        username: userData.full_name.toLowerCase().replace(/\s+/g, ''),
+        phone: userData.whatsapp_number || '',
+        country: 'PH' // Default to Philippines, will be updated from country_id later
       });
     }
 
