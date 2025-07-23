@@ -92,7 +92,22 @@ export default function GOMDashboard() {
         const totalCustomers = 0; // Will implement when submissions system is working
         const timesSaved = (ordersData?.length || 0) * 20; // 20 hours saved per order
 
-        setOrders(ordersData || []);
+        // Transform database data to match frontend Order interface
+        const transformedOrders: Order[] = ordersData?.map(order => ({
+          id: order.id,
+          title: order.title,
+          images: [], // Database doesn't have images field yet
+          price_per_item: order.price,
+          currency_code: order.currency,
+          minimum_orders: order.min_orders || 1,
+          current_orders: 0, // Will be calculated from submissions later
+          closing_date: order.deadline,
+          status: order.is_active ? 'active' : 'closed',
+          is_published: order.is_active,
+          created_at: order.created_at
+        })) || [];
+        
+        setOrders(transformedOrders);
         setStats({
           totalEarnings: user.total_earnings || 0,
           activeOrders,
