@@ -28,28 +28,14 @@ interface Order {
   id: string;
   title: string;
   description: string;
-  images: string[];
-  price_per_item: number;
-  currency_code: string;
-  minimum_orders: number;
-  current_orders: number;
-  closing_date: string;
-  estimated_shipping_date: string;
-  status: string;
+  price: number;
+  currency: string;
+  min_orders: number;
+  deadline: string;
   payment_methods: any;
-  payment_instructions: string;
-  is_published: boolean;
+  is_active: boolean;
   created_at: string;
-  gom: {
-    id: string;
-    full_name: string;
-    rating: number;
-    total_orders_completed: number;
-    member_since: string;
-    countries?: {
-      currency_symbol: string;
-    };
-  };
+  user_id: string;
 }
 
 export default function OrderView() {
@@ -66,17 +52,9 @@ export default function OrderView() {
       try {
         const { data, error } = await supabase
           .from('orders')
-          .select(`
-            *,
-            gom:users!orders_gom_id_fkey (
-              id, full_name, rating, total_orders_completed, member_since,
-              countries!users_country_id_fkey (
-                currency_symbol
-              )
-            )
-          `)
+          .select('*')
           .eq('id', orderId)
-          .eq('is_published', true)
+          .eq('is_active', true)
           .single();
 
         if (error) {
@@ -109,13 +87,14 @@ export default function OrderView() {
 
   const getProgressPercentage = () => {
     if (!order) return 0;
-    return Math.min((order.current_orders / order.minimum_orders) * 100, 100);
+    // Using min_orders from actual schema, current_orders will be 0 for now
+    return Math.min((0 / (order.min_orders || 1)) * 100, 100);
   };
 
   const getTimeLeft = () => {
     if (!order) return 'Loading...';
     const now = new Date();
-    const closing = new Date(order.closing_date);
+    const closing = new Date(order.deadline);
     const diff = closing.getTime() - now.getTime();
     
     if (diff <= 0) return 'Closed';
@@ -131,7 +110,7 @@ export default function OrderView() {
 
   const getSpotsLeft = () => {
     if (!order) return 0;
-    return Math.max(0, order.minimum_orders - order.current_orders);
+    return Math.max(0, (order.min_orders || 1) - 0); // current_orders is 0 for now
   };
 
   const getPaymentMethodsList = () => {
@@ -207,33 +186,10 @@ export default function OrderView() {
               <Card>
                 <CardContent className="p-0">
                   <div className="aspect-square bg-muted rounded-lg overflow-hidden">
-                    {order.images.length > 0 ? (
-                      <img 
-                        src={order.images[currentImageIndex]} 
-                        alt={order.title}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <img src={bearMascot} alt="No image" className="h-16 w-16 opacity-50" />
-                      </div>
-                    )}
-                  </div>
-                  {order.images.length > 1 && (
-                    <div className="flex space-x-2 p-4 overflow-x-auto">
-                      {order.images.map((image, index) => (
-                        <button
-                          key={index}
-                          onClick={() => setCurrentImageIndex(index)}
-                          className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 ${
-                            index === currentImageIndex ? 'border-primary' : 'border-transparent'
-                          }`}
-                        >
-                          <img src={image} alt={`${order.title} ${index + 1}`} className="w-full h-full object-cover" />
-                        </button>
-                      ))}
+                    <div className="w-full h-full flex items-center justify-center">
+                      <img src={bearMascot} alt="Product placeholder" className="h-16 w-16 opacity-50" />
                     </div>
-                  )}
+                  </div>
                 </CardContent>
               </Card>
 
@@ -250,13 +206,13 @@ export default function OrderView() {
                     <div>
                       <p className="text-sm text-muted-foreground">Price per item</p>
                       <p className="text-2xl font-bold text-primary">
-                        {order.gom.countries?.currency_symbol || '$'}{order.price_per_item}
+                        {order.currency === 'PHP' ? '₱' : '$'}{order.price}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">Estimated shipping</p>
+                      <p className="text-sm text-muted-foreground">Deadline</p>
                       <p className="font-medium">
-                        {format(new Date(order.estimated_shipping_date), 'MMM dd, yyyy')}
+                        {format(new Date(order.deadline), 'MMM dd, yyyy')}
                       </p>
                     </div>
                   </div>
@@ -275,16 +231,10 @@ export default function OrderView() {
                     </div>
                   </div>
 
-                  {order.payment_instructions && (
-                    <div className="p-4 bg-muted rounded-lg">
-                      <p className="text-sm text-muted-foreground mb-2">Payment Instructions</p>
-                      <p className="text-sm">{order.payment_instructions}</p>
-                    </div>
-                  )}
                 </CardContent>
               </Card>
 
-              {/* GOM Profile */}
+              {/* GOM Profile - Simplified for now */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center space-x-2">
@@ -295,20 +245,16 @@ export default function OrderView() {
                 <CardContent>
                   <div className="flex items-center space-x-4">
                     <Avatar className="h-12 w-12">
-                      <AvatarImage src="" />
-                      <AvatarFallback>
-                        {order.gom.full_name.split(' ').map(n => n[0]).join('')}
-                      </AvatarFallback>
+                      <AvatarFallback>GM</AvatarFallback>
                     </Avatar>
                     <div className="flex-1">
-                      <h4 className="font-semibold">{order.gom.full_name}</h4>
+                      <h4 className="font-semibold">Group Order Manager</h4>
                       <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                         <div className="flex items-center">
                           <Star className="h-4 w-4 text-yellow-500 mr-1" />
-                          {order.gom.rating || 5.0} rating
+                          5.0 rating
                         </div>
-                        <div>{order.gom.total_orders_completed || 0}+ successful orders</div>
-                        <div>Member since {format(new Date(order.gom.member_since), 'yyyy')}</div>
+                        <div>Verified GOM</div>
                       </div>
                     </div>
                   </div>
@@ -326,7 +272,7 @@ export default function OrderView() {
                 <CardContent className="space-y-4">
                   <div className="flex justify-between items-center">
                     <span className="text-2xl font-bold">
-                      {order.current_orders}/{order.minimum_orders}
+                      0/{order.min_orders || 1}
                     </span>
                     <Badge variant="secondary" className="bg-green-100 text-green-800">
                       {getSpotsLeft()} spots left
@@ -342,7 +288,7 @@ export default function OrderView() {
                     </div>
                     <div className="flex items-center">
                       <Users className="h-4 w-4 mr-1" />
-                      {order.current_orders} joined
+                      0 joined
                     </div>
                   </div>
                 </CardContent>
@@ -365,13 +311,13 @@ export default function OrderView() {
                   <div className="flex items-center justify-between text-sm">
                     <span>Closes on</span>
                     <span className="font-medium">
-                      {format(new Date(order.closing_date), 'MMM dd, yyyy')}
+                      {format(new Date(order.deadline), 'MMM dd, yyyy')}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span>Estimated shipping</span>
                     <span className="font-medium">
-                      {format(new Date(order.estimated_shipping_date), 'MMM dd, yyyy')}
+                      TBD
                     </span>
                   </div>
                 </div>

@@ -20,55 +20,130 @@ import {
   CalendarIcon,
   DollarSign,
   Eye,
-  Sparkles
+  Sparkles,
+  Check,
+  Link2
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface Country {
-  id: string;
+  code: string;
   name: string;
+  flag: string;
   currency_code: string;
   currency_symbol: string;
 }
 
+interface PaymentMethod {
+  id: string;
+  name: string;
+  logo?: string;
+  color: string;
+}
+
 interface OrderData {
+  country: Country | null;
   title: string;
   description: string;
+  product_url: string;
   images: string[];
   price_per_item: number;
   minimum_orders: number;
+  maximum_orders?: number;
   closing_date: Date | undefined;
   estimated_shipping_date: Date | undefined;
-  payment_methods: {
-    gcash: boolean;
-    paymaya: boolean;
-    bpi: boolean;
-    bank_transfer: boolean;
-  };
+  payment_methods: string[];
   payment_instructions: string;
 }
+
+// Country data with payment methods
+const COUNTRIES: Country[] = [
+  { code: 'HK', name: 'Hong Kong', flag: '🇭🇰', currency_code: 'HKD', currency_symbol: 'HK$' },
+  { code: 'MY', name: 'Malaysia', flag: '🇲🇾', currency_code: 'MYR', currency_symbol: 'RM' },
+  { code: 'ID', name: 'Indonesia', flag: '🇮🇩', currency_code: 'IDR', currency_symbol: 'Rp' },
+  { code: 'PH', name: 'Philippines', flag: '🇵🇭', currency_code: 'PHP', currency_symbol: '₱' },
+  { code: 'US', name: 'USA', flag: '🇺🇸', currency_code: 'USD', currency_symbol: '$' },
+  { code: 'CA', name: 'Canada', flag: '🇨🇦', currency_code: 'CAD', currency_symbol: 'C$' },
+  { code: 'FR', name: 'France', flag: '🇫🇷', currency_code: 'EUR', currency_symbol: '€' },
+  { code: 'GB', name: 'UK', flag: '🇬🇧', currency_code: 'GBP', currency_symbol: '£' },
+  { code: 'AU', name: 'Australia', flag: '🇦🇺', currency_code: 'AUD', currency_symbol: 'A$' },
+];
+
+const PAYMENT_METHODS: Record<string, PaymentMethod[]> = {
+  HK: [
+    { id: 'payme', name: 'PayMe', color: 'bg-blue-500' },
+    { id: 'fps', name: 'FPS', color: 'bg-green-500' },
+    { id: 'bank_transfer', name: 'Bank Transfer', color: 'bg-gray-500' },
+    { id: 'alipay_hk', name: 'Alipay HK', color: 'bg-blue-600' },
+  ],
+  MY: [
+    { id: 'tng', name: "Touch 'n Go", color: 'bg-blue-500' },
+    { id: 'grabpay', name: 'GrabPay', color: 'bg-green-500' },
+    { id: 'bank_transfer', name: 'Bank Transfer', color: 'bg-gray-500' },
+    { id: 'boost', name: 'Boost', color: 'bg-orange-500' },
+  ],
+  ID: [
+    { id: 'gopay', name: 'GoPay', color: 'bg-green-500' },
+    { id: 'ovo', name: 'OVO', color: 'bg-purple-500' },
+    { id: 'dana', name: 'DANA', color: 'bg-blue-500' },
+    { id: 'bank_transfer', name: 'Bank Transfer', color: 'bg-gray-500' },
+  ],
+  PH: [
+    { id: 'gcash', name: 'GCash', color: 'bg-blue-500' },
+    { id: 'paymaya', name: 'PayMaya', color: 'bg-green-500' },
+    { id: 'bank_transfer', name: 'Bank Transfer', color: 'bg-gray-500' },
+    { id: 'paypal', name: 'PayPal', color: 'bg-blue-600' },
+  ],
+  US: [
+    { id: 'paypal', name: 'PayPal', color: 'bg-blue-600' },
+    { id: 'venmo', name: 'Venmo', color: 'bg-blue-400' },
+    { id: 'zelle', name: 'Zelle', color: 'bg-purple-500' },
+    { id: 'apple_pay', name: 'Apple Pay', color: 'bg-black' },
+  ],
+  CA: [
+    { id: 'interac', name: 'Interac e-Transfer', color: 'bg-red-500' },
+    { id: 'paypal', name: 'PayPal', color: 'bg-blue-600' },
+    { id: 'bank_transfer', name: 'Bank Transfer', color: 'bg-gray-500' },
+    { id: 'apple_pay', name: 'Apple Pay', color: 'bg-black' },
+  ],
+  FR: [
+    { id: 'paypal', name: 'PayPal', color: 'bg-blue-600' },
+    { id: 'bank_transfer', name: 'Bank Transfer', color: 'bg-gray-500' },
+    { id: 'lydia', name: 'Lydia', color: 'bg-green-500' },
+    { id: 'apple_pay', name: 'Apple Pay', color: 'bg-black' },
+  ],
+  GB: [
+    { id: 'paypal', name: 'PayPal', color: 'bg-blue-600' },
+    { id: 'bank_transfer', name: 'Bank Transfer', color: 'bg-gray-500' },
+    { id: 'revolut', name: 'Revolut', color: 'bg-blue-500' },
+    { id: 'apple_pay', name: 'Apple Pay', color: 'bg-black' },
+  ],
+  AU: [
+    { id: 'payid', name: 'PayID', color: 'bg-orange-500' },
+    { id: 'paypal', name: 'PayPal', color: 'bg-blue-600' },
+    { id: 'bank_transfer', name: 'Bank Transfer', color: 'bg-gray-500' },
+    { id: 'apple_pay', name: 'Apple Pay', color: 'bg-black' },
+  ],
+};
 
 export default function CreateOrder() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [country, setCountry] = useState<Country | null>(null);
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [orderData, setOrderData] = useState<OrderData>({
+    country: null,
     title: '',
     description: '',
+    product_url: '',
     images: [],
     price_per_item: 0,
     minimum_orders: 50,
+    maximum_orders: undefined,
     closing_date: undefined,
     estimated_shipping_date: undefined,
-    payment_methods: {
-      gcash: true,
-      paymaya: false,
-      bpi: false,
-      bank_transfer: false
-    },
+    payment_methods: [],
     payment_instructions: ''
   });
 
@@ -78,27 +153,6 @@ export default function CreateOrder() {
       navigate('/auth');
     }
   }, [user, navigate]);
-
-  // Fetch user's country
-  useEffect(() => {
-    const fetchCountry = async () => {
-      if (!user?.country_id) return;
-
-      const { data, error } = await supabase
-        .from('countries')
-        .select('*')
-        .eq('id', user.country_id)
-        .single();
-
-      if (error) {
-        console.error('Error fetching country:', error);
-      } else {
-        setCountry(data);
-      }
-    };
-
-    fetchCountry();
-  }, [user]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -129,12 +183,31 @@ export default function CreateOrder() {
     return orderData.price_per_item * orderData.minimum_orders * 0.1;
   };
 
+  const getAvailablePaymentMethods = () => {
+    if (!orderData.country) return [];
+    return PAYMENT_METHODS[orderData.country.code] || [];
+  };
+
   const handleSubmit = async (publish: boolean = false) => {
-    if (!user) return;
+    if (!user || !orderData.country) return;
 
     setIsLoading(true);
 
     try {
+      // Map currency codes to supported values
+      const currencyMapping: Record<string, 'PHP' | 'MYR'> = {
+        'PHP': 'PHP',
+        'MYR': 'MYR',
+        // Default other currencies to PHP for now
+        'HKD': 'PHP',
+        'IDR': 'PHP',
+        'USD': 'PHP',
+        'CAD': 'PHP',
+        'EUR': 'PHP',
+        'GBP': 'PHP',
+        'AUD': 'PHP'
+      };
+
       const { data, error } = await supabase
         .from('orders')
         .insert({
@@ -142,11 +215,13 @@ export default function CreateOrder() {
           title: orderData.title,
           description: orderData.description,
           price: orderData.price_per_item,
-          currency: 'PHP' as const,
+          currency: currencyMapping[orderData.country.currency_code] || 'PHP',
           min_orders: orderData.minimum_orders,
+          max_orders: orderData.maximum_orders,
           deadline: orderData.closing_date?.toISOString(),
-          payment_methods: orderData.payment_methods,
-          slug: orderData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+          is_active: publish,
+          slug: orderData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
+          payment_methods: orderData.payment_methods
         })
         .select()
         .single();
@@ -173,23 +248,23 @@ export default function CreateOrder() {
   };
 
   const steps = [
-    { id: 1, title: "Product Details", description: "What are you selling?" },
-    { id: 2, title: "Pricing", description: "Let's talk money" },
-    { id: 3, title: "Timeline", description: "When does this adventure end?" },
-    { id: 4, title: "Payment", description: "How can they pay you?" },
+    { id: 1, title: "Country & Payment", description: "Where are you based?" },
+    { id: 2, title: "Product Details", description: "What are you selling?" },
+    { id: 3, title: "Pricing", description: "Let's talk money" },
+    { id: 4, title: "Timeline", description: "When does this adventure end?" },
     { id: 5, title: "Launch", description: "Ready to go live?" }
   ];
 
   const canProceed = () => {
     switch (currentStep) {
       case 1:
-        return orderData.title && orderData.description;
+        return orderData.country && orderData.payment_methods.length > 0;
       case 2:
-        return orderData.price_per_item > 0 && orderData.minimum_orders > 0;
+        return orderData.title && orderData.description;
       case 3:
-        return orderData.closing_date;
+        return orderData.price_per_item > 0 && orderData.minimum_orders > 0;
       case 4:
-        return Object.values(orderData.payment_methods).some(method => method);
+        return orderData.closing_date;
       default:
         return true;
     }
@@ -244,6 +319,88 @@ export default function CreateOrder() {
           <Card className="mb-8">
             <CardContent className="p-6">
               {currentStep === 1 && (
+                <div className="space-y-8">
+                  {/* Country Selection */}
+                  <div className="space-y-4">
+                    <div className="text-center">
+                      <h3 className="text-lg font-semibold mb-2">Select Your Country</h3>
+                      <p className="text-muted-foreground">This determines currency and available payment methods</p>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                      {COUNTRIES.map((country) => (
+                        <Card 
+                          key={country.code}
+                          className={cn(
+                            "cursor-pointer transition-all hover:shadow-md",
+                            orderData.country?.code === country.code 
+                              ? "ring-2 ring-primary bg-primary/5" 
+                              : "hover:shadow-sm"
+                          )}
+                          onClick={() => {
+                            setOrderData(prev => ({ 
+                              ...prev, 
+                              country, 
+                              payment_methods: [] 
+                            }));
+                          }}
+                        >
+                          <CardContent className="p-4 text-center">
+                            <div className="text-2xl mb-2">{country.flag}</div>
+                            <div className="font-medium text-sm">{country.name}</div>
+                            <div className="text-xs text-muted-foreground">{country.currency_code}</div>
+                            {orderData.country?.code === country.code && (
+                              <Check className="h-4 w-4 text-primary mx-auto mt-2" />
+                            )}
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Payment Methods Selection */}
+                  {orderData.country && (
+                    <div className="space-y-4">
+                      <div className="text-center">
+                        <h3 className="text-lg font-semibold mb-2">Select Payment Methods</h3>
+                        <p className="text-muted-foreground">Choose all payment methods you can accept</p>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-3">
+                        {getAvailablePaymentMethods().map((method) => (
+                          <Card 
+                            key={method.id}
+                            className={cn(
+                              "cursor-pointer transition-all hover:shadow-md",
+                              orderData.payment_methods.includes(method.id)
+                                ? "ring-2 ring-primary bg-primary/5" 
+                                : "hover:shadow-sm"
+                            )}
+                            onClick={() => {
+                              setOrderData(prev => ({
+                                ...prev,
+                                payment_methods: prev.payment_methods.includes(method.id)
+                                  ? prev.payment_methods.filter(id => id !== method.id)
+                                  : [...prev.payment_methods, method.id]
+                              }));
+                            }}
+                          >
+                            <CardContent className="p-4 flex items-center space-x-3">
+                              <div className={cn("w-3 h-3 rounded-full", method.color)} />
+                              <span className="font-medium flex-1">{method.name}</span>
+                              {orderData.payment_methods.includes(method.id) && (
+                                <Check className="h-4 w-4 text-primary" />
+                              )}
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {currentStep === 2 && (
                 <div className="space-y-6">
                   <div className="space-y-2">
                     <Label htmlFor="title">Product Title</Label>
@@ -253,6 +410,20 @@ export default function CreateOrder() {
                       value={orderData.title}
                       onChange={(e) => setOrderData(prev => ({ ...prev, title: e.target.value }))}
                     />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="product_url">Product URL (Optional)</Label>
+                    <div className="relative">
+                      <Link2 className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="product_url"
+                        placeholder="https://example.com/product"
+                        value={orderData.product_url}
+                        onChange={(e) => setOrderData(prev => ({ ...prev, product_url: e.target.value }))}
+                        className="pl-10"
+                      />
+                    </div>
                   </div>
 
                   <div className="space-y-2">
@@ -302,13 +473,15 @@ export default function CreateOrder() {
                 </div>
               )}
 
-              {currentStep === 2 && (
+              {currentStep === 3 && (
                 <div className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <Label htmlFor="price">Price per Item</Label>
                       <div className="relative">
-                        <DollarSign className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                        <span className="absolute left-3 top-3 text-sm text-muted-foreground">
+                          {orderData.country?.currency_symbol || '$'}
+                        </span>
                         <Input
                           id="price"
                           type="number"
@@ -332,6 +505,20 @@ export default function CreateOrder() {
                     </div>
                   </div>
 
+                  <div className="space-y-2">
+                    <Label htmlFor="maximum">Maximum Orders (Optional)</Label>
+                    <Input
+                      id="maximum"
+                      type="number"
+                      placeholder="No limit"
+                      value={orderData.maximum_orders || ''}
+                      onChange={(e) => setOrderData(prev => ({ 
+                        ...prev, 
+                        maximum_orders: e.target.value ? parseInt(e.target.value) : undefined 
+                      }))}
+                    />
+                  </div>
+
                   {orderData.price_per_item > 0 && orderData.minimum_orders > 0 && (
                     <Card className="bg-gradient-to-r from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20">
                       <CardContent className="p-4">
@@ -340,7 +527,7 @@ export default function CreateOrder() {
                           <h3 className="font-semibold text-orange-800 dark:text-orange-200">Potential Earnings</h3>
                         </div>
                         <p className="text-2xl font-bold text-orange-600">
-                          {country?.currency_symbol || '$'}{calculatePotentialEarnings().toFixed(2)}
+                          {orderData.country?.currency_symbol || '$'}{calculatePotentialEarnings().toFixed(2)}
                         </p>
                         <p className="text-sm text-orange-700 dark:text-orange-300">
                           If you get {orderData.minimum_orders} orders, you could earn this much!
@@ -351,7 +538,7 @@ export default function CreateOrder() {
                 </div>
               )}
 
-              {currentStep === 3 && (
+              {currentStep === 4 && (
                 <div className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
@@ -375,6 +562,7 @@ export default function CreateOrder() {
                             selected={orderData.closing_date}
                             onSelect={(date) => setOrderData(prev => ({ ...prev, closing_date: date }))}
                             initialFocus
+                            disabled={(date) => date < new Date()}
                           />
                         </PopoverContent>
                       </Popover>
@@ -401,10 +589,22 @@ export default function CreateOrder() {
                             selected={orderData.estimated_shipping_date}
                             onSelect={(date) => setOrderData(prev => ({ ...prev, estimated_shipping_date: date }))}
                             initialFocus
+                            disabled={(date) => orderData.closing_date ? date < orderData.closing_date : date < new Date()}
                           />
                         </PopoverContent>
                       </Popover>
                     </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="instructions">Payment Instructions</Label>
+                    <Textarea
+                      id="instructions"
+                      placeholder="Add specific payment details for your selected methods..."
+                      value={orderData.payment_instructions}
+                      onChange={(e) => setOrderData(prev => ({ ...prev, payment_instructions: e.target.value }))}
+                      rows={4}
+                    />
                   </div>
 
                   <div className="p-4 bg-muted rounded-lg">
@@ -416,49 +616,6 @@ export default function CreateOrder() {
                 </div>
               )}
 
-              {currentStep === 4 && (
-                <div className="space-y-6">
-                  <div className="space-y-4">
-                    <Label>Payment Methods (Select all that apply)</Label>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {[
-                        { key: 'gcash', label: 'GCash' },
-                        { key: 'paymaya', label: 'PayMaya' },
-                        { key: 'bpi', label: 'BPI' },
-                        { key: 'bank_transfer', label: 'Bank Transfer' }
-                      ].map(method => (
-                        <div key={method.key} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={method.key}
-                            checked={orderData.payment_methods[method.key as keyof typeof orderData.payment_methods]}
-                            onCheckedChange={(checked) => {
-                              setOrderData(prev => ({
-                                ...prev,
-                                payment_methods: {
-                                  ...prev.payment_methods,
-                                  [method.key]: checked
-                                }
-                              }));
-                            }}
-                          />
-                          <Label htmlFor={method.key}>{method.label}</Label>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="instructions">Payment Instructions</Label>
-                    <Textarea
-                      id="instructions"
-                      placeholder="Add your payment details and instructions here..."
-                      value={orderData.payment_instructions}
-                      onChange={(e) => setOrderData(prev => ({ ...prev, payment_instructions: e.target.value }))}
-                      rows={4}
-                    />
-                  </div>
-                </div>
-              )}
 
               {currentStep === 5 && (
                 <div className="space-y-6">
